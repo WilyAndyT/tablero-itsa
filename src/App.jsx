@@ -3,6 +3,7 @@ import { Layout, Row, Col, Typography, theme, Divider, Radio } from "antd";
 import logo from "./assets/Logo Tomebamba negro.png";
 import { FilaTablero } from "./Fila";
 import "./assets/styles.css"; // Importa el archivo de estilos
+import axios from "axios";
 const apiUrl = import.meta.env.VITE_URL_API;
 
 const { Header, Content } = Layout;
