@@ -1,0 +1,13 @@
+/* Estilo para el radio button seleccionado */
+.ant-radio-checked .ant-radio-inner {
+    border-color: red !important;  /* Borde rojo cuando está seleccionado */
+    background-color: red !important;  /* Fondo rojo cuando está seleccionado */
+  }
+  
+  /* Cambiar el color del texto del radio seleccionado */
+  
+  .ant-radio-inner:hover {
+   
+    border-color: red !important;  /* Borde rojo en el focus */
+  }
+  
