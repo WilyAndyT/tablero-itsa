@@ -33,6 +33,7 @@ const App = () => {
         headers: {
           Authorization:
             "dfa5b24e-a654-4f4c-b3f3-edd8e4a444d8!1efd02f3af567a7aa6dba7b8a773cebbde07f0f9ccf7f0d0ebd8647eefeddb67980bc780a37484",
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(body),
       });
