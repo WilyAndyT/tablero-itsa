@@ -1,27 +1,37 @@
 import React, { useEffect, useState } from "react";
-import { Layout, Row, Col, Typography, theme, Divider, Radio } from "antd";
-import logo from "./assets/Logo Tomebamba negro.png";
+import {
+  Layout,
+  Row,
+  Col,
+  Typography,
+  theme,
+  Divider,
+  Radio,
+  Image,
+} from "antd";
+import logo from "./assets/ToyoCuencaLogo.png";
 import { FilaTablero } from "./Fila";
-import "./assets/styles.css"; // Importa el archivo de estilos
+import "./assets/styles.css";
 import axios from "axios";
-const apiUrl = import.meta.env.VITE_URL_API;
 
+const apiUrl = import.meta.env.VITE_URL_API;
 const { Header, Content } = Layout;
 
 const App = () => {
+  const [clave, setClave] = useState("a");
+  const [tecnicos, setTecnicos] = useState([]);
   const [visibleGroup, setVisibleGroup] = useState(0);
+  const [totalGrupos, setTotalGrupos] = useState(0);
+  const [tecnicosAMostrar, setTecnicosAMostrar] = useState([]);
+
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
-  const [tecnicoss, setTecnicos] = useState([]);
-  const [clave, setClave] = useState("a");
 
-  useEffect(() => {
-    obtenerTecnicos();
-    const intervalId = setInterval(obtenerTecnicos, 300000);
-    return () => clearInterval(intervalId);
-  }, [clave]);
+  const horas = [8, 9, 10, 11, 12, 14, 15, 16, 17, 18];
+  const tecnicosPorGrupo = 4;
 
+  // Obtener los técnicos desde la API
   const obtenerTecnicos = async () => {
     try {
       const body = {
@@ -38,89 +48,82 @@ const App = () => {
         },
       });
 
-      console.log(res.data); // Imprimir los datos de la respuesta
+      const tecnicosMap = {};
+      res.data.ordenes.forEach((tecnico) => {
+        if (!tecnicosMap[tecnico.TecnicoNombre]) {
+          tecnicosMap[tecnico.TecnicoNombre] = {
+            name: tecnico.TecnicoNombre,
+            ordenes: [],
+          };
+        }
+        tecnicosMap[tecnico.TecnicoNombre].ordenes.push({
+          orden:
+            clave === "a"
+              ? `M-${tecnico.OrdenNumero.trim()}`
+              : `L-${tecnico.OrdenNumero.trim()}`,
+          tipo:
+            tecnico.OrdenEstado === "400" || tecnico.OrdenEstado === "401"
+              ? "ACTUAL"
+              : "PLAN",
+          hora: tecnico.OrdenHora,
+        });
+      });
+
+      const tecnicosList = Object.values(tecnicosMap);
+      setTecnicos(tecnicosList); // Guardar todos los técnicos
+      setTotalGrupos(Math.ceil(tecnicosList.length / tecnicosPorGrupo)); // Calcular el total de grupos
     } catch (error) {
       console.error("Error:", error);
     }
   };
 
-  // Ejemplo de datos
-  const horas = [8, 9, 10, 11, 12, 14, 15, 16, 17, 18];
-  const tecnicos1 = [
-    { name: "BAY EXPRESS", orden: "OT1", hora: 14, tipo: "ACTUAL" },
-    { name: "BAY EXPRESS", orden: "OT3", hora: 9, tipo: "PLAN" },
-    { name: "TECNICO 1", orden: "OT4", hora: 11, tipo: "ACTUAL" },
-    { name: "TECNICO 1", orden: "OT5", hora: 9, tipo: "PLAN" },
-    { name: "TECNICO 1", orden: "OT8", hora: 8, tipo: "ACTUAL" },
-    { name: "TECNICO 1", orden: "OT6", hora: 8, tipo: "PLAN" },
-  ];
-
-  const tecnicosMap = []; // Usamos un objeto para almacenar los técnicos únicos
-
-  tecnicos1.forEach((tecnico) => {
-    // Si el técnico no está en el objeto, lo añadimos
-    if (!tecnicosMap[tecnico.name]) {
-      tecnicosMap[tecnico.name] = {
-        name: tecnico.name,
-        ordenes: [], // Inicializamos una lista para las órdenes
-      };
-    }
-
-    // Agregamos la orden al técnico correspondiente
-    tecnicosMap[tecnico.name].ordenes.push({
-      orden: tecnico.orden,
-      tipo: tecnico.tipo,
-      hora: tecnico.hora,
-    });
-  });
-
-  // Convertimos el objeto de técnicos en un array
-  const tecnicos = Object.values(tecnicosMap);
-
-  const tecnicosPorGrupo = 1;
-  const totalGrupos = Math.ceil(tecnicos.length / tecnicosPorGrupo);
-
+  // Obtener técnicos cuando cambie la clave
   useEffect(() => {
-    const interval = setInterval(() => {
-      setVisibleGroup((prevGroup) => (prevGroup + 1) % totalGrupos);
-    }, 15000);
+    obtenerTecnicos();
+    const intervalo = setInterval(obtenerTecnicos, 600000);
+    return () => clearInterval(intervalo);
+  }, [clave]);
 
-    return () => clearInterval(interval);
+  // Calcular técnicos a mostrar según el grupo visible
+  useEffect(() => {
+    const start = visibleGroup * tecnicosPorGrupo;
+    const end = start + tecnicosPorGrupo;
+    setTecnicosAMostrar(tecnicos.slice(start, end));
+  }, [visibleGroup, tecnicos]);
+
+  // Ciclo automático entre grupos
+  useEffect(() => {
+    if (totalGrupos > 1) {
+      const interval = setInterval(() => {
+        setVisibleGroup((prevGroup) => (prevGroup + 1) % totalGrupos);
+      }, 15000);
+      return () => clearInterval(interval);
+    }
   }, [totalGrupos]);
 
-  // Obtener el grupo de técnicos a mostrar
-  const tecnicosAMostrar = tecnicos.slice(
-    visibleGroup * tecnicosPorGrupo,
-    (visibleGroup + 1) * tecnicosPorGrupo
-  );
-
   const onChange = (e) => {
-    console.log(`radio checked:${e.target.value}`);
     setClave(e.target.value);
+    setVisibleGroup(0); // Resetear al primer grupo al cambiar de clave
   };
 
   return (
-    <Layout
-      style={{
-        maxHeight: "100vh",
-      }}
-    >
-      {/* Header */}
+    <Layout style={{ maxHeight: "100vh" }}>
       <Header
         style={{
           position: "sticky",
           top: 0,
           zIndex: 1,
           width: "100%",
-          alignItems: "center",
+          display: "flex", // Usar flexbox
+          justifyContent: "center", // Centrar horizontalmente
+          alignItems: "center", // Centrar verticalmente
           background: "#d9d9d9",
-          maxHeight: "50px",
+          height: "50px", // Cambié maxHeight por height para mantener una altura fija
         }}
       >
-        <img src={logo} className="demo-logo" width="120px" alt="Logo" />
+        <Image src={logo} width="150px" alt="Logo" />
       </Header>
 
-      {/* Main Content */}
       <Content>
         <Layout
           style={{
@@ -135,90 +138,61 @@ const App = () => {
               onChange={onChange}
               defaultValue="a"
             >
-              <Radio
-                style={{
-                  background: "white",
-                }}
-                value="a"
-              >
+              <Radio style={{ background: "white" }} value="a">
                 MECANICA
               </Radio>
-              <Radio
-                style={{
-                  background: "white",
-                }}
-                value="b"
-              >
+              <Radio style={{ background: "white" }} value="b">
                 LATONERIA
               </Radio>
             </Radio.Group>
+
             <Row style={{ marginTop: 0 }}>
               <Col span={4}>
-                <Typography.Title level={4} rong>
-                  TÉCNICO
-                </Typography.Title>
+                <Typography.Title level={4}>TÉCNICO</Typography.Title>
               </Col>
               {horas.map((hora) => (
-                <Col span={2} style={{ textAlign: "center" }}>
+                <Col key={hora} span={2} style={{ textAlign: "center" }}>
                   <Typography.Title level={4}>{hora}:00</Typography.Title>
                 </Col>
               ))}
             </Row>
 
-            {/* Filas por cada técnico */}
-            {tecnicosAMostrar.map((tecnico) => (
-              <>
+            {tecnicosAMostrar.map((tecnico, index) => (
+              <React.Fragment key={index}>
                 <Row gutter={[2, 4]}>
-                  <Col
-                    span={3}
-                    style={{
-                      alignContent: "center",
-                    }}
-                  >
+                  <Col span={3}>
                     <Typography.Text strong>{tecnico.name}</Typography.Text>
                   </Col>
-                  <Col
-                    span={1}
-                    style={{
-                      alignContent: "center",
-                    }}
-                  >
+                  <Col span={1}>
                     <Typography.Text strong>ACTUAL</Typography.Text>
                   </Col>
                   {horas.map((hora) => (
                     <FilaTablero
+                      key={`${tecnico.name}-ACTUAL-${hora}`}
                       hora={hora}
                       tecnico={tecnico}
                       tipo="ACTUAL"
-                    ></FilaTablero>
+                    />
                   ))}
                   <Col span={3}>
                     <Typography.Text strong></Typography.Text>
                   </Col>
-                  <Col
-                    span={1}
-                    style={{
-                      alignContent: "center",
-                    }}
-                  >
+                  <Col span={1}>
                     <Typography.Text strong>PLAN</Typography.Text>
                   </Col>
                   {horas.map((hora) => (
                     <FilaTablero
+                      key={`${tecnico.name}-PLAN-${hora}`}
                       hora={hora}
                       tecnico={tecnico}
                       tipo="PLAN"
-                    ></FilaTablero>
+                    />
                   ))}
                   <Divider
-                    style={{
-                      borderColor: "#7cb305",
-                      padding: 0,
-                      margin: 6,
-                    }}
-                  ></Divider>
+                    style={{ borderColor: "#7cb305", padding: 0, margin: 6 }}
+                  />
                 </Row>
-              </>
+              </React.Fragment>
             ))}
           </Content>
         </Layout>

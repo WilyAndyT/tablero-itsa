@@ -1,6 +1,9 @@
 import { Col, Row, Typography } from "antd";
 
 export const FilaTablero = ({ hora, tecnico, tipo }) => {
+  //console.log(tecnico.ordenes);
+  const ordenesHora = tecnico.ordenes.filter((orden) => orden.hora === hora);
+  //console.log(ordenesHora);
   const obtenerOrdenPorTecnicoYHora = (orden) => {
     if (orden.hora === hora && orden.tipo === tipo) {
       return orden.orden;
@@ -23,31 +26,35 @@ export const FilaTablero = ({ hora, tecnico, tipo }) => {
         {[0, 1, 2].map((index) => (
           <Row
             key={index}
-            gutter={[5]}
+            gutter={[1]}
             style={{
               marginBottom: 3,
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            {tecnico.ordenes.slice(index * 2, (index + 1) * 2).map((orden) => (
-              <Col span={10} key={orden.id}>
+            {ordenesHora.slice(index * 2, (index + 1) * 2).map((orden) => (
+              <Col span={12} key={orden.id}>
                 <div
                   style={{
                     height: "30px",
-                    backgroundColor: obtenerOrdenPorTecnicoYHora(orden)
-                      ? "#bae637"
-                      : "#d9d9d9",
+                    backgroundColor:
+                      tipo === "PLAN" && obtenerOrdenPorTecnicoYHora(orden)
+                        ? "#23BAC4"
+                        : tipo === "ACTUAL" &&
+                          obtenerOrdenPorTecnicoYHora(orden)
+                        ? "#bae637"
+                        : "#d9d9d9",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     borderRadius: "3px",
                     border: obtenerOrdenPorTecnicoYHora(orden)
-                      ? "1px solid black"
+                      ? "2px solid black"
                       : "0px solid black",
                   }}
                 >
-                  <Typography.Text strong>
+                  <Typography.Text strong style={{ fontSize: "13px" }}>
                     {obtenerOrdenPorTecnicoYHora(orden)}
                   </Typography.Text>
                 </div>
