@@ -29,7 +29,7 @@ const App = () => {
   } = theme.useToken();
 
   const horas = [8, 9, 10, 11, 12, 14, 15, 16, 17, 18];
-  const tecnicosPorGrupo = 4;
+  const tecnicosPorGrupo = 2;
 
   // Obtener los técnicos desde la API
   const obtenerTecnicos = async () => {
@@ -114,11 +114,11 @@ const App = () => {
           top: 0,
           zIndex: 1,
           width: "100%",
-          display: "flex", // Usar flexbox
-          justifyContent: "center", // Centrar horizontalmente
-          alignItems: "center", // Centrar verticalmente
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
           background: "#d9d9d9",
-          height: "50px", // Cambié maxHeight por height para mantener una altura fija
+          height: "50px",
         }}
       >
         <Image src={logo} width="150px" alt="Logo" />

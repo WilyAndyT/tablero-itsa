@@ -14,7 +14,7 @@ export const FilaTablero = ({ hora, tecnico, tipo }) => {
     <Col key={hora} span={2}>
       <div
         style={{
-          height: "100px",
+          height: "200px",
           backgroundColor: "#d9d9d9",
           display: "flex",
 
@@ -23,7 +23,7 @@ export const FilaTablero = ({ hora, tecnico, tipo }) => {
           borderRadius: "5px",
         }}
       >
-        {[0, 1, 2].map((index) => (
+        {[0, 1, 2, 3, 4, 5].map((index) => (
           <Row
             key={index}
             gutter={[1]}
@@ -33,8 +33,8 @@ export const FilaTablero = ({ hora, tecnico, tipo }) => {
               justifyContent: "center",
             }}
           >
-            {ordenesHora.slice(index * 2, (index + 1) * 2).map((orden) => (
-              <Col span={12} key={orden.id}>
+            {ordenesHora.slice(index, index + 1).map((orden) => (
+              <Col span={22} key={orden.id}>
                 <div
                   style={{
                     height: "30px",
@@ -54,7 +54,7 @@ export const FilaTablero = ({ hora, tecnico, tipo }) => {
                       : "0px solid black",
                   }}
                 >
-                  <Typography.Text strong style={{ fontSize: "13px" }}>
+                  <Typography.Text strong style={{ fontSize: "20px" }}>
                     {obtenerOrdenPorTecnicoYHora(orden)}
                   </Typography.Text>
                 </div>
