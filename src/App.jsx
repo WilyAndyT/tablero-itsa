@@ -37,7 +37,7 @@ const App = () => {
       const body = {
         agencia: "08",
         tipo: clave === "a" ? "MEC" : "LAT",
-        dia: "5",
+        dia: "6",
       };
 
       const res = await axios.post(apiUrl, body, {
@@ -152,7 +152,7 @@ const App = () => {
               </Col>
               {horas.map((hora) => (
                 <Col key={hora} span={2} style={{ textAlign: "center" }}>
-                  <Typography.Title level={4}>{hora}:00</Typography.Title>
+                  <Typography.Title level={3}>{hora}:00</Typography.Title>
                 </Col>
               ))}
             </Row>
@@ -161,10 +161,14 @@ const App = () => {
               <React.Fragment key={index}>
                 <Row gutter={[2, 4]}>
                   <Col span={3}>
-                    <Typography.Text strong>{tecnico.name}</Typography.Text>
+                    <Typography.Text strong style={{ fontSize: "18px" }}>
+                      {tecnico.name}
+                    </Typography.Text>
                   </Col>
                   <Col span={1}>
-                    <Typography.Text strong>ACTUAL</Typography.Text>
+                    <Typography.Text strong style={{ fontSize: "18px" }}>
+                      ACTUAL
+                    </Typography.Text>
                   </Col>
                   {horas.map((hora) => (
                     <FilaTablero
@@ -178,7 +182,9 @@ const App = () => {
                     <Typography.Text strong></Typography.Text>
                   </Col>
                   <Col span={1}>
-                    <Typography.Text strong>PLAN</Typography.Text>
+                    <Typography.Text strong style={{ fontSize: "18px" }}>
+                      PLAN
+                    </Typography.Text>
                   </Col>
                   {horas.map((hora) => (
                     <FilaTablero

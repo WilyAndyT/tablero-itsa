@@ -54,7 +54,7 @@ export const FilaTablero = ({ hora, tecnico, tipo }) => {
                       : "0px solid black",
                   }}
                 >
-                  <Typography.Text strong style={{ fontSize: "20px" }}>
+                  <Typography.Text strong style={{ fontSize: "18px" }}>
                     {obtenerOrdenPorTecnicoYHora(orden)}
                   </Typography.Text>
                 </div>
