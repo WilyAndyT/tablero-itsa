@@ -14,7 +14,7 @@ export const FilaTablero = ({ hora, tecnico, tipo }) => {
     <Col key={hora} span={2}>
       <div
         style={{
-          height: "200px",
+          height: "100px",
           backgroundColor: "#d9d9d9",
           display: "flex",
 
@@ -37,7 +37,7 @@ export const FilaTablero = ({ hora, tecnico, tipo }) => {
               <Col span={22} key={orden.id}>
                 <div
                   style={{
-                    height: "30px",
+                    height: "25px",
                     backgroundColor:
                       tipo === "PLAN" && obtenerOrdenPorTecnicoYHora(orden)
                         ? "#23BAC4"

@@ -29,7 +29,7 @@ const App = () => {
   } = theme.useToken();
 
   const horas = [8, 9, 10, 11, 12, 14, 15, 16, 17, 18];
-  const tecnicosPorGrupo = 2;
+  const tecnicosPorGrupo = 4;
 
   // Obtener los técnicos desde la API
   const obtenerTecnicos = async () => {
@@ -37,7 +37,7 @@ const App = () => {
       const body = {
         agencia: "08",
         tipo: clave === "a" ? "MEC" : "LAT",
-        dia: "6",
+        dia: "2",
       };
 
       const res = await axios.post(apiUrl, body, {
@@ -47,31 +47,34 @@ const App = () => {
           "Content-Type": "application/json",
         },
       });
-
-      const tecnicosMap = {};
-      res.data.ordenes.forEach((tecnico) => {
-        if (!tecnicosMap[tecnico.TecnicoNombre]) {
-          tecnicosMap[tecnico.TecnicoNombre] = {
-            name: tecnico.TecnicoNombre,
-            ordenes: [],
-          };
-        }
-        tecnicosMap[tecnico.TecnicoNombre].ordenes.push({
-          orden:
-            clave === "a"
-              ? `M-${tecnico.OrdenNumero.trim()}`
-              : `L-${tecnico.OrdenNumero.trim()}`,
-          tipo:
-            tecnico.OrdenEstado === "400" || tecnico.OrdenEstado === "401"
-              ? "ACTUAL"
-              : "PLAN",
-          hora: tecnico.OrdenHora,
+      if (res.data.estado === 1) {
+        const tecnicosMap = {};
+        res.data.ordenes.forEach((tecnico) => {
+          if (!tecnicosMap[tecnico.TecnicoNombre]) {
+            tecnicosMap[tecnico.TecnicoNombre] = {
+              name: tecnico.TecnicoNombre,
+              ordenes: [],
+            };
+          }
+          tecnicosMap[tecnico.TecnicoNombre].ordenes.push({
+            orden:
+              clave === "a"
+                ? `M-${tecnico.OrdenNumero.trim()}`
+                : `L-${tecnico.OrdenNumero.trim()}`,
+            tipo:
+              tecnico.OrdenEstado === "400" || tecnico.OrdenEstado === "401"
+                ? "ACTUAL"
+                : "PLAN",
+            hora: tecnico.OrdenHora,
+          });
         });
-      });
 
-      const tecnicosList = Object.values(tecnicosMap);
-      setTecnicos(tecnicosList); // Guardar todos los técnicos
-      setTotalGrupos(Math.ceil(tecnicosList.length / tecnicosPorGrupo)); // Calcular el total de grupos
+        const tecnicosList = Object.values(tecnicosMap);
+        setTecnicos(tecnicosList); // Guardar todos los técnicos
+        setTotalGrupos(Math.ceil(tecnicosList.length / tecnicosPorGrupo)); // Calcular el total de grupos
+      } else {
+        setTecnicos([]);
+      }
     } catch (error) {
       console.error("Error:", error);
     }
