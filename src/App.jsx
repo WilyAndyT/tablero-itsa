@@ -9,7 +9,7 @@ import {
   Radio,
   Image,
 } from "antd";
-import logo from "./assets/ToyoCuencaLogo.png";
+import logo from "./assets/Logo Toyocuenca 2021-01.png";
 import { FilaTablero } from "./Fila";
 import "./assets/styles.css";
 import axios from "axios";
@@ -59,8 +59,8 @@ const App = () => {
           tecnicosMap[tecnico.TecnicoNombre].ordenes.push({
             orden:
               clave === "a"
-                ? `M-${tecnico.OrdenNumero.trim()}`
-                : `L-${tecnico.OrdenNumero.trim()}`,
+                ? `MEC-${tecnico.OrdenNumero.trim()}`
+                : `LAT-${tecnico.OrdenNumero.trim()}`,
             tipo:
               tecnico.OrdenEstado === "400" || tecnico.OrdenEstado === "401"
                 ? "ACTUAL"
@@ -124,7 +124,7 @@ const App = () => {
           height: "50px",
         }}
       >
-        <Image src={logo} width="150px" alt="Logo" />
+        <Image src={logo} width="220px" alt="Logo" height="220px" />
       </Header>
 
       <Content>
