@@ -83,7 +83,7 @@ const App = () => {
   // Obtener técnicos cuando cambie la clave
   useEffect(() => {
     obtenerTecnicos();
-    const intervalo = setInterval(obtenerTecnicos, 150000);
+    const intervalo = setInterval(obtenerTecnicos, 60000);
     return () => clearInterval(intervalo);
   }, [clave]);
 
