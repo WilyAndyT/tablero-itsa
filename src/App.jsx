@@ -124,7 +124,7 @@ const App = () => {
           height: "50px",
         }}
       >
-        <Image src={logo} width="220px" alt="Logo" height="220px" />
+        <img src={logo} width="220px" alt="Logo" height="220px" />
       </Header>
 
       <Content>
